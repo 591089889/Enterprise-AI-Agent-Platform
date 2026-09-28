@@ -1,0 +1,768 @@
+@import './base.css';
+
+/* ------------------------------------------------------------------
+   全局样式
+   ------------------------------------------------------------------
+   说明：
+   - 脚手架默认样式中的 #app 双栏 grid / body flex 会破坏全屏聊天布局，
+     因此这里替换为应用外壳布局；
+   - 不引入任何 UI 组件库，只用基础 CSS + base.css 提供的颜色变量。
+   ------------------------------------------------------------------ */
+
+:root {
+  /* 语义色（在 base.css 的明暗模式变量基础上补充） */
+  --color-accent: #1f9d75;
+  --color-accent-soft: rgba(31, 157, 117, 0.12);
+  --color-text-muted: rgba(60, 60, 60, 0.66);
+  --color-surface: var(--vt-c-white);
+  --color-surface-soft: var(--vt-c-white-soft);
+  --color-surface-mute: var(--vt-c-white-mute);
+  --color-danger: #c0392b;
+  --color-danger-soft: rgba(192, 57, 43, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-accent: #35c391;
+    --color-accent-soft: rgba(53, 195, 145, 0.16);
+    --color-text-muted: rgba(235, 235, 235, 0.64);
+    --color-surface: var(--vt-c-black);
+    --color-surface-soft: var(--vt-c-black-soft);
+    --color-surface-mute: var(--vt-c-black-mute);
+    --color-danger: #ff8a80;
+    --color-danger-soft: rgba(255, 138, 128, 0.14);
+  }
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  display: block;
+  place-items: initial;
+  overflow: hidden;
+}
+
+#app {
+  /* 覆盖脚手架样式：不再使用 max-width / grid */
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ------------------------------- 外壳 ------------------------------- */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+}
+
+.app-header__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.app-header__subtitle {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-chip {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-size: 0.8rem;
+}
+
+.page-alert {
+  padding: 0.5rem 1.25rem;
+}
+
+/* ------------------------------- 按钮 ------------------------------- */
+
+.btn {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background: var(--color-surface-mute);
+  color: var(--color-text);
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--color-border-hover);
+}
+
+.btn--danger {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-danger);
+  padding: 0.2rem 0.4rem;
+}
+
+.btn--sm {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+}
+
+.btn--block {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+/* ------------------------------- 表单 ------------------------------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field__label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border: 1px solid var(--color-border-hover);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -1px;
+  border-color: var(--color-accent);
+}
+
+.textarea {
+  resize: none;
+  line-height: 1.5;
+}
+
+/* ------------------------------- 提示 ------------------------------- */
+
+.alert {
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.82rem;
+}
+
+.alert--error {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.alert--info {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+/* 隐藏的原生文件选择框：由「选择文件并上传」按钮触发（Stage 22 知识库上传） */
+.file-input {
+  display: none;
+}
+
+/* 表单内**可见**的原生文件选择框（Stage 23：新建知识库时可选「首份文档」） */
+.file-input--inline {
+  display: block;
+  width: 100%;
+  border: 1px dashed var(--color-border-hover);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+/* -------------------------- 状态占位（空 / 错误） -------------------------- */
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.state__title {
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.state--error .state__title {
+  color: var(--color-danger);
+}
+
+/* ------------------------------- 主布局 ------------------------------- */
+
+/* 主界面：左侧会话列表 + 右侧聊天区 */
+.chat-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.chat-layout__sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: 280px;
+  min-height: 0;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+}
+
+.chat-layout__panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* 聊天区的可滚动主体 */
+.chat-layout__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+}
+
+@media (max-width: 720px) {
+  .chat-layout__sidebar {
+    width: 200px;
+  }
+}
+
+/* ---------------------------- 平台外壳布局 ---------------------------- */
+
+/* 左侧模块导航 + 右侧内容区（位于顶栏之下，撑满剩余高度） */
+.app-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* 内容区：各页面自行管理内部滚动，避免出现双重滚动条 */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ------------------------------ 模块导航 ------------------------------ */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: 220px;
+  min-height: 0;
+  padding: 0.85rem 0.5rem;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  overflow-y: auto;
+}
+
+.sidebar__heading {
+  padding: 0 0.6rem 0.5rem;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.6rem;
+  border-left: 3px solid transparent;
+  border-radius: 8px;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.sidebar__item:hover {
+  background: var(--color-surface-mute);
+}
+
+.sidebar__item--active {
+  border-left-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.sidebar__icon {
+  width: 1.1em;
+  text-align: center;
+  opacity: 0.85;
+}
+
+/* --------------------------- 页面：AI 工作台 --------------------------- */
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.workspace__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.workspace__heading {
+  min-width: 0;
+}
+
+.workspace__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.workspace__subtitle {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* Agent 选择器（Stage 17：决定本次对话使用哪套 Agent 配置） */
+
+.workspace__agent {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.workspace__agent-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.workspace__agent-select {
+  max-width: 14rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+  color: var(--color-heading);
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+}
+
+.workspace__agent-select:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.workspace__agent-error {
+  padding: 0.4rem 1.25rem;
+  font-size: 0.75rem;
+  color: var(--color-danger, #b91c1c);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* --------------------------- 页面：Dashboard --------------------------- */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+}
+
+.stat-card__label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.stat-card__value {
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-heading);
+}
+
+.stat-card__hint {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+/* 键值列表（Dashboard「系统状态」面板） */
+
+.kv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.kv-list__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+}
+
+.kv-list__key {
+  flex: 0 0 6rem;
+  color: var(--color-text-muted);
+}
+
+.kv-list__value {
+  color: var(--color-text);
+}
+
+.action-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* 行内小尺寸输入（Admin 用户管理的角色下拉，Stage 19） */
+
+.input--inline {
+  width: auto;
+  min-width: 6.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.82rem;
+}
+
+/* 分页条（沿用后端分页，不在客户端全量拉取） */
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.pager__info {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.pager__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ------------------------ 平台模块页面（占位） ------------------------ */
+
+.module-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.module-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.module-page__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.module-page__subtitle {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.module-page__body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* 内容型模块页面（如 Agent 管理）：从顶部开始排列，而不是居中空态 */
+.module-page__body--top {
+  display: block;
+  padding: 1rem 1.25rem;
+}
+
+/* ------------------------- 面板（表单 / 卡片容器） ------------------------- */
+
+.panel {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface-soft);
+  margin-bottom: 1rem;
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.panel__title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.panel__body {
+  padding: 0.9rem;
+}
+
+.panel__actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.panel-alert {
+  margin: 0 0 0.75rem;
+}
+
+/* ------------------------------- 表单栅格 ------------------------------- */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1rem;
+}
+
+.form-grid__full {
+  grid-column: 1 / -1;
+}
+
+.form-grid .textarea {
+  min-height: 5rem;
+}
+
+/* 多选（复选框）组：Agent 工具绑定（Stage 17） */
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--color-border-hover);
+  border-radius: 8px;
+  background: var(--color-surface);
+}
+
+.checkbox-group__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.field__hint {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+/* -------------------------------- 表格 --------------------------------- */
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.table th,
+.table td {
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: var(--color-surface-mute);
+}
+
+.table__strong {
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.table__muted {
+  color: var(--color-text-muted);
+  max-width: 22rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table__col-actions {
+  width: 8.5rem;
+}
+
+.table__actions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+/* -------------------------------- 徽标 --------------------------------- */
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-size: 0.75rem;
+}
+
+/* 索引状态徽标（pending / indexed / failed） */
+.badge--pending {
+  background: var(--color-surface-mute);
+  color: var(--color-text-muted);
+}
+
+.badge--ok {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.badge--danger {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+/* ------------------------------ 区块标题 ------------------------------ */
+
+.section-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0 0 0.5rem;
+}
+
+.section-bar__title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.muted {
+  margin: 0 0 0.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+/* ---------------------------- 文档正文预览 ---------------------------- */
+
+.doc-content {
+  margin: 0;
+  max-height: 24rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+
